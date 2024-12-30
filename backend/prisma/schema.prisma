@@ -6,9 +6,92 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"] //　d1では必要（それ以外ならコメントアウト）
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite" // d1 is sql base database
+  // provider = "postgresql"
+  // provider = "cockroachdb"
   url      = env("DATABASE_URL")
 }
+
+// TODO: @db.varchar(255)など、sqlite非対応項目について強化する
+
+// ユーザーモデル
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String?
+
+  imageSets ImageSet[] // UserとImageSetの1対多の関係を定義
+
+  createdAt DateTime   @default(now()) // 作成日時を自動設定
+  updatedAt DateTime   @updatedAt // 更新日時を自動更新
+  deletedAt DateTime? // 論理削除
+
+  @@map("am_users") // テーブル名を明示的に指定
+}
+
+// 画像セットモデル
+model ImageSet {
+  id        String   @id @default(uuid())
+  name      String?
+  ownerId   String?   // 外部キーとしてのユーザーID
+
+  owner      User?            @relation(fields: [ownerId], references: [id], onDelete: SetNull) // ユーザーモデルへのリレーション、ユーザー削除時はnullを設定
+
+  createdAt DateTime @default(now()) // 作成日時を自動設定
+  updatedAt DateTime @updatedAt // 更新日時を自動更新
+  deletedAt DateTime? // 論理削除
+
+  @@index([ownerId]) // ownerId フィールドにインデックスを追加
+  @@map("dm_image_sets") // テーブル名を明示的に指定
+}
+
+// ファイルモデル
+model File {
+  id            String   @id @default(uuid())
+  key           String   @unique // 一意のキーを設定
+  filename      String
+  contentType   String   // MIMEタイプ
+  size          Int
+  version       Int      @default(1) // バージョン管理
+  // metadata      Json?  // ファイルメタデータ (JSON形式で柔軟に対応) sqliteでは非対応
+  metadata      String?  // ファイルメタデータ
+
+  fileAttachments FileAttachment[] // FileAttachmentとの関係を定義
+
+  createdAt     DateTime @default(now()) // 作成日時を自動設定
+  updatedAt     DateTime @updatedAt // 更新日時を自動更新
+  deletedAt     DateTime? // 論理削除
+
+  @@index([key]) // キーによる検索を高速化するためのインデックス
+  @@map("dm_files") // テーブル名を明示的に指定
+}
+
+// ファイル添付モデル
+model FileAttachment {
+  id            String     @id @default(uuid())
+  // recordType    AttachmentRecordType // 関連するモデルのタイプ (Enumで型安全性を確保) ※sqliteでは非対応
+  recordType    String // 関連するモデルのタイプ
+  recordId      String // 関連するレコードのID
+  name          String // 添付ファイルの用途 (例: "サムネイル", "オリジナル")
+  fileId        String // Fileへの外部キー
+
+  file      File @relation(fields: [fileId], references: [id], onDelete: Cascade) // ファイルモデルへのリレーション、ファイル削除時に添付も削除
+
+  createdAt     DateTime @default(now()) // 作成日時を自動設定
+  updatedAt     DateTime @updatedAt // 更新日時を自動更新
+
+  @@index([fileId]) // fileIdによる検索を高速化するためのインデックス
+  @@index([recordType, recordId]) // recordTypeとrecordIdによる検索を高速化するためのインデックス
+  @@map("dm_file_attachments") // テーブル名を明示的に指定
+}
+
+// 添付先のモデルタイプを定義するEnum ※sqliteでは非対応
+// enum AttachmentRecordType {
+//   USER
+//   IMAGE_SET
+//   // 今後、関連付けたいモデルが増えたらここに追加
+// }
