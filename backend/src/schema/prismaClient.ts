@@ -28,6 +28,7 @@ const getPrismaClient = (env: any) => {
     if (env.DB_TYPE === "D1") {
       const adapter = new PrismaD1(env.DB);
       prisma = new PrismaClient({ adapter });
+
     } else if (env.DB_TYPE === "COCKROACHDB") {
       prisma = new PrismaClient({
         datasources: {
@@ -35,9 +36,9 @@ const getPrismaClient = (env: any) => {
             url: env.DATABASE_URL,
           },
         },
-      }).$extends(withAccelerate());
-    } else {
-      // postgresql ： 未検証
+      }).$extends(withAccelerate()) as unknown as PrismaClient;
+
+    } else { // postgresql ： 未検証
       const adapter = new PrismaPg(
         new Pool({ connectionString: env.DATABASE_URL })
       );
