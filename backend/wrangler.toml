@@ -19,7 +19,7 @@ binding = "DB"
 database_name = "hono-prisma-db"
 database_id = "9c88d0b2-c3c8-41c3-8f82-bc3787d31e22"
 preview_database_id = "9c88d0b2-c3c8-41c3-8f82-bc3787d31e22"
-migrations_dir = "prisma/migrations"
+migrations_dir = "prisma/d1/migrations"
 
 # [ai]
 # binding = "AI"

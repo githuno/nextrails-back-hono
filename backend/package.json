@@ -2,16 +2,29 @@
   "name": "backend",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify"
+    "deploy": "wrangler deploy --minify",
+    "seed:check": "ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seeds/seed.check.ts"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seeds/seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-d1": "^6.1.0",
+    "@prisma/adapter-pg": "^6.1.0",
     "@prisma/client": "^6.1.0",
-    "hono": "^4.6.15"
+    "@prisma/extension-accelerate": "^1.2.1",
+    "bcrypt": "^5.1.1",
+    "hono": "^4.6.15",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241218.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "@types/uuid": "^10.0.0",
     "prisma": "^6.1.0",
+    "ts-node": "^10.9.2",
     "wrangler": "^3.99.0"
   }
 }
