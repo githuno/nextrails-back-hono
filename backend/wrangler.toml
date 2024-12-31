@@ -10,9 +10,9 @@ compatibility_flags = [ "nodejs_compat" ] # WorkerでNode.jsのAPIを有効化�
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "hono-backend"
 
 [[d1_databases]]
 binding = "DB"

@@ -63,3 +63,24 @@ https://console.prisma.io
 1. npx ts-node --compiler-options {\"module\":\"commonjs\"} prisma/seeds/seed.check.ts
 <!-- prismaクライアント再作成 -->
 npx prisma generate --no-engine
+
+## r2
+<!-- バケット一覧取得 -->
+npx wrangler r2 bucket list
+<!-- サンプルファイルのアップロード -->
+echo "This is a sample text file." > sample.txt && npx wrangler r2 object put hono-backend/sample.txt --file sample.txt
+<!-- サンプルファイルのダウンロード -->
+npx wrangler r2 object get hono-backend/sample.txt
+<!-- サンプルファイルの削除 -->
+npx wrangler r2 object delete hono-backend/sample.txt
+
+sudo apt-get update && sudo apt-get install ca-certificates
+
+
+## vitest
+
+## zod
+
+## hono rpc
+
+## trpc

@@ -3,16 +3,12 @@ import { PrismaD1 } from "@prisma/adapter-d1";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { withAccelerate } from "@prisma/extension-accelerate";
-
-interface BaseBindings {
-  DB: PrismaClient;
-  // その他のバインディングを追加する
-}
+import { BaseBindings } from "@/types";
 
 let prisma: PrismaClient;
 
 // D1
-interface D1Bindings {
+interface D1Bindings extends BaseBindings {
   DB: D1Database;
 }
 
@@ -21,7 +17,15 @@ interface OtherBindings extends BaseBindings {
   DB: PrismaClient;
 }
 
-type Bindings = D1Bindings | OtherBindings;
+const getBindings = (env: any) => {
+  if (env.DB_TYPE === "D1") {
+    return { DB: env.DB } as D1Bindings;
+  } else {
+    return { DB: getPrismaClient(env) } as OtherBindings;
+  }
+};
+
+type Bindings = ReturnType<typeof getBindings>;
 
 const getPrismaClient = (env: any) => {
   if (!prisma) {
