@@ -19,19 +19,20 @@ const app = new Hono<{ Bindings: Bindings }>()
         }
         return null;
       },
-      allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
+      allowHeaders: [
+        "X-Custom-Header",
+        "Upgrade-Insecure-Requests",
+        "Content-Type",
+        "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Methods",
+      ],
       allowMethods: ["POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS"],
       exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
       maxAge: 600,
       credentials: true,
     })
   )
-  .use("*", (c, next) => {
-    c.res.headers.append("Access-Control-Allow-Origin", "*");
-    c.res.headers.append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    c.res.headers.append("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    return next();
-  })
 
   .route("/api/users", users)
   .route("/api/imagesets", imagesets)
