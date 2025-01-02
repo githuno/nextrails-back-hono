@@ -26,6 +26,14 @@ const app = new Hono<{ Bindings: Bindings }>()
       credentials: true,
     })
   )
+  .options("*", (c) => {
+    c.res.headers.append("Access-Control-Allow-Origin", "*");
+    c.res.headers.append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    c.res.headers.append("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    return c.text("");
+  })
+
+
   .route("/api/users", users)
   .route("/api/imagesets", imagesets)
   .route("/api/files", files)
