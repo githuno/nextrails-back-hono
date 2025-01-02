@@ -3,22 +3,31 @@ import { Bindings } from "@/schema/prismaClient";
 import { AwsClient } from "aws4fetch";
 import { extensionToContentType } from "@/types";
 
+// owenerId：userIdを想定
+// fileExtension：拡張子
+// keyId：fileIdやfileNameとは独立した名前として扱う
+
 const app = new Hono<{ Bindings: Bindings }>()
   .get("/", async (c) => {
-    // ownerIdとfileExtensionを取得
-    const { ownerId, fileExtension } = c.req.query();
-    if (!ownerId || !fileExtension) {
-      return c.json({ error: "ownerId and fileExtension are required" }, 400);
-    }
-    // 拡張子に合わせてcontentTypeを設定
-    const contentTypeInfo = extensionToContentType[fileExtension];
-    if (!contentTypeInfo) {
-      return c.json({ error: "Invalid fileExtension" }, 400);
+    // const { ownerId, fileExtension, keyId } = c.req.query();
+    // if (!ownerId || !fileExtension || !keyId) {
+    //   return c.json({ error: "ownerId and fileExtension and keyId are required" }, 400);
+    // }
+    const { contentType, storagePath} = c.req.query();
+    if (!storagePath) {
+      return c.json({ error: "contentType and storagePath is required" }, 400);
     }
 
+    // 拡張子に合わせてcontentTypeを設定
+    // const contentTypeInfo = extensionToContentType[fileExtension];
+    // if (!contentTypeInfo) {
+    //   return c.json({ error: "Invalid fileExtension" }, 400);
+    // }
+
+    // オーナーID>コンテンツタイプ>ファイルID で格納先のパスを設定
     const endpoint = `https://${c.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${c.env.R2_BUCKET_NAME}`;
-    const filename = `${Date.now()}.${fileExtension}`;
-    const url = new URL(`${endpoint}/${ownerId}/${contentTypeInfo.type}/${filename}`);
+    // const url = new URL(`${endpoint}/users/${ownerId}/${contentTypeInfo.class}/${keyId}.${fileExtension}`);
+    const url = new URL(`${endpoint}/${storagePath}`);
 
     // 有効期限を1時間に設定
     url.searchParams.set("X-Amz-Expires", "3600");
@@ -32,7 +41,7 @@ const app = new Hono<{ Bindings: Bindings }>()
       new Request(url, {
         method: "PUT",
         headers: {
-          "Content-Type": contentTypeInfo.mimeType,
+          "Content-Type": contentType,
         },
       }),
       {
