@@ -1,6 +1,7 @@
 ## tailscale
 
 `sudo tailscale up -ssh -hostname mac-hono`
+`sudo tailscale funnel -bg -https=10000 8787`
 
 ## wrangler login
 

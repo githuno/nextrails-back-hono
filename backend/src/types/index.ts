@@ -10,21 +10,25 @@ interface BaseBindings {
   // その他のバインディングを追加する
 }
 
-type ContentType = "Image" | "Video" | "ThreeD" | "Docs";
-const extensionToContentType: Record<string, { mimeType: string, type: ContentType }> = {
-  png: { mimeType: "image/png", type: "Image" },
-  jpg: { mimeType: "image/jpeg", type: "Image" },
-  jpeg: { mimeType: "image/jpeg", type: "Image" },
-  mp4: { mimeType: "video/mp4", type: "Video" },
-  mov: { mimeType: "video/quicktime", type: "Video" },
-  avi: { mimeType: "video/x-msvideo", type: "Video" },
-  obj: { mimeType: "application/octet-stream", type: "ThreeD" },
-  fbx: { mimeType: "application/octet-stream", type: "ThreeD" },
-  glb: { mimeType: "model/gltf-binary", type: "ThreeD" },
-  pdf: { mimeType: "application/pdf", type: "Docs" },
-  doc: { mimeType: "application/msword", type: "Docs" },
-  docx: { mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", type: "Docs" },
-  txt: { mimeType: "text/plain", type: "Docs" },
+type Dir = "images" | "videos" | "threes" | "docs";
+const extensionToContentType: Record<string, { mime: string; class: Dir }> = {
+  png: { mime: "image/png", class: "images" },
+  jpg: { mime: "image/jpeg", class: "images" },
+  jpeg: { mime: "image/jpeg", class: "images" },
+  mp4: { mime: "video/mp4", class: "videos" },
+  webm: { mime: "video/webm", class: "videos" },
+  mov: { mime: "video/quicktime", class: "videos" },
+  avi: { mime: "video/x-msvideo", class: "videos" },
+  obj: { mime: "application/octet-stream", class: "threes" },
+  fbx: { mime: "application/octet-stream", class: "threes" },
+  glb: { mime: "model/gltf-binary", class: "threes" },
+  pdf: { mime: "application/pdf", class: "docs" },
+  doc: { mime: "application/msword", class: "docs" },
+  docx: {
+    mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    class: "docs",
+  },
+  txt: { mime: "text/plain", class: "docs" },
 };
 
 export { type BaseBindings, extensionToContentType };
