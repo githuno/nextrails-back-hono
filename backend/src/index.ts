@@ -23,9 +23,6 @@ const app = new Hono<{ Bindings: Bindings }>()
         "X-Custom-Header",
         "Upgrade-Insecure-Requests",
         "Content-Type",
-        "Access-Control-Allow-Origin",
-        "Access-Control-Allow-Headers",
-        "Access-Control-Allow-Methods",
       ],
       allowMethods: ["POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS"],
       exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
@@ -52,5 +49,13 @@ const app = new Hono<{ Bindings: Bindings }>()
     } catch (error: any) {
       return c.json({ error: error.message }, 500);
     }
-  });
+  })
+  .get("/ao", async (c) => {
+    const corsOrigins = c.env.CORS_ORIGINS;
+    const allowedOrigins = [
+      ...corsOrigins.split(",").map((origin: string) => origin.trim()),
+    ];
+    return c.json(allowedOrigins);
+  })
+
 export default app;

@@ -7,6 +7,9 @@ interface BaseBindings {
   AWS_ACCESS_KEY_ID: string;
   AWS_SECRET_ACCESS_KEY: string;
 
+  // CORS設定用
+  CORS_ORIGINS: string;
+
   // その他のバインディングを追加する
 }
 
