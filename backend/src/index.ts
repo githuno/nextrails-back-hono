@@ -50,12 +50,5 @@ const app = new Hono<{ Bindings: Bindings }>()
       return c.json({ error: error.message }, 500);
     }
   })
-  .get("/ao", async (c) => {
-    const corsOrigins = c.env.CORS_ORIGINS;
-    const allowedOrigins = [
-      ...corsOrigins.split(",").map((origin: string) => origin.trim()),
-    ];
-    return c.json(allowedOrigins);
-  })
 
 export default app;
